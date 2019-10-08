@@ -1,0 +1,5 @@
+1.main_single是单特征波段选择
+2.main_multi多特征波段选择
+3.SingleDataInitialize单特征数据处理
+4.MultiDataInitialize多特征数据处理
+5.main_classify建立分类model

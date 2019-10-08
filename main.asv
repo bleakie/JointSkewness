@@ -1,0 +1,98 @@
+
+%%%单特征波段选择
+clc
+clear all
+ncalSet_ab=xlsread('xunlian.xlsx');
+nvalSet_c=xlsread('yuce.xlsx');
+load X
+load Y
+%%%%归一化处理；前14个波段噪声大，不用
+X=X(15:233,:)';Y=Y(15:233,:)';
+for i=1:960
+    for j=1:219
+        X0(i,j)=X(i,j)/sqrt(sum(X(i,:).^2));
+        Y0(i,j)=Y(i,j)/sqrt(sum(Y(i,:).^2));
+    end
+end
+%%%%划分训练测试
+ [mcalSet_ab_shang,mvalSet_c_shang,mcalSet_ab_mean,mvalSet_c_mean]=huafen(X0,Y0,1);
+xblock1=[Y0];
+[a1,a2]=size(xblock1);
+samplemeanA=mean(xblock1); % 平均图片，1 × N
+%%%%%%%对样本进行处理；去均值
+xmeanA=[];
+for i=1:a1
+    xmeanA(i,:)=xblock1(i,:)-samplemeanA; % xmean是一个M × N矩阵，xmean每一行保存的数据是“每个图片数据-平均图片”
+end;
+%%%%协方差矩阵
+sigmA=cov(xmeanA);
+%%%%斜偏度张量
+UA={xblock1',xblock1',xblock1'};
+TA = cpdgen(UA);
+w=zeros(1,233);
+for ii=1:233
+    w(ii)=ii;
+end
+w=w(:,15:233);
+k=a2;
+%%%%%波段选择主程序
+while k>6
+    for ii=1:k
+        T1=TA;sigma=sigmA;
+        T1(ii,:,:)=[];%%%%每次删除ii行
+        T1(:,ii,:)=[];
+        T1(:,:,ii)=[];
+        sigma(ii,:)=[];
+        sigma(:,ii)=[];
+        R=reshape(T1,(k-1)*(k-1),(k-1));
+        R1(:,ii)=svd(R);K(:,ii)=svd(sigma);%%%%高阶奇异值分解
+    end
+    for j1=1:k
+        for i1=1:(k-1)
+            s=(R1(i1,j1)/((K(i1,j1)^3)));
+        end
+        Q(j1)=prod(s,2);
+    end
+    [n1 n2]=max(Q);%%%删除最大偏度对应波段
+    clear Q;   clear K;   clear R;   clear R1;
+    TA(n2,:,:)=[];
+    TA(:,n2,:)=[];
+    TA(:,:,n2)=[];
+    sigmA(:,n2)=[];
+    sigmA(n2,:)=[];
+    w(:,n2)=[];
+    [f,k]=size(w);
+end
+
+index=[23 25 55 76 91 108 206 210 57 65 177 185 187 190 191];
+
+% index=[59,60,64,65,67,71,73,75,89,94,121,127,132,164,173];%融合
+Cal_sel=mcalSet_ab_mean;
+Cvl_sel=mvalSet_c_mean;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+samplemean=mean(Cal_sel); % 平均图片，1 × N
+xmean1=[];
+for i=1:240
+    xmean1(i,:)=Cal_sel(i,:)-samplemean; % xmean是一个M × N矩阵，xmean每一行保存的数据是“每个图片数据-平均图片”
+end;
+sigm=cov(xmean1);   % M * M 阶矩阵
+[E1,D1] = eig(sigm);
+%——————————计算白化矩阵———————————
+whiteningMatrix1 =inv(sqrt(D1)) * E1';
+% dewhiteningMatrix = E * sqrt(D);
+y=Cal_sel*whiteningMatrix1';
+yy=Cvl_sel*whiteningMatrix1';
+%%%%%%%%%%% SVM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[bestacc,bestc,bestg] = SVMcgForClass(ncalSet_ab,y,-10,10,-10,10);
+% 打印粗略选择结果
+str = sprintf( ' Accuracy = %g%% Best c = %g Best g = %g',bestacc,bestc,bestg);
+disp(str);
+% 利用最佳的参数进行SVM网络训练
+cmd = ['-c ',num2str(bestc),' -g ',num2str(bestg)];
+model = svmtrain(ncalSet_ab,y, cmd);
+% SVM网络训练
+[predict_label1,accuracy] = svmpredict(ncalSet_ab,y,model);
+Percent1=accuracy(1)/100;
+% SVM网络预测
+[predict_label2,accuracy] = svmpredict(nvalSet_c,yy,model);
+Percent2=accuracy(1)/100;
