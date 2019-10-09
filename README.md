@@ -12,8 +12,13 @@ Application of Joint Skewness Algorithm to Select Optimal Wavelengths of Hypersp
 
 （3）TensorToolbox
 
-## 2.数据处理
-由于涉及隐私数据，因此不公开原始数据，按照论文步骤直接得到结果（.mat文件），参见1.Materials and Methods
+## 2.数据处理&算法
+
+（1）由于涉及隐私数据，因此不公开原始数据，按照论文步骤直接得到结果（.mat文件），参见1.Materials and Methods
+
+（2）张量的展开
+
+![MASK0](https://github.com/bleakie/JointSkewness/blob/master/result/unfold.png)
 
 ## 3.结果
 
@@ -21,15 +26,15 @@ Application of Joint Skewness Algorithm to Select Optimal Wavelengths of Hypersp
 
 （1）全波段单特征&多特征
 
-![MASK0](https://github.com/bleakie/MaskInsightface/blob/master/images/Akbar_Al_Baker_0001.jpg)
+![MASK0](https://github.com/bleakie/JointSkewness/blob/master/result/full.png)
 
 （2）单特征&多特征下的波段选择
 
-![MASK0](https://github.com/bleakie/MaskInsightface/blob/master/images/Akbar_Al_Baker_0001.jpg)
+![MASK0](https://github.com/bleakie/JointSkewness/blob/master/result/optimal.png)
 
 （3）单特征&多特征下的波段选择后详细分类结果
 
-![MASK0](https://github.com/bleakie/MaskInsightface/blob/master/images/Akbar_Al_Baker_0001.jpg)
+![MASK0](https://github.com/bleakie/JointSkewness/blob/master/result/result.png)
 
 （4）多特征&不同波段选择方法比较
 
