@@ -33,4 +33,4 @@ Application of Joint Skewness Algorithm to Select Optimal Wavelengths of Hypersp
 
 （4）多特征&不同波段选择方法比较
 
-![MASK0](https://github.com/bleakie/MaskInsightface/blob/master/images/Akbar_Al_Baker_0001.jpg)
+![MASK](https://github.com/bleakie/JointSkewness/blob/master/result/compare.png)
