@@ -1,5 +1,6 @@
 # JointSkewness
 基于联合偏度的高光谱图像波段选择对玉米种子分类研究
+
 Application of Joint Skewness Algorithm to Select Optimal Wavelengths of Hyperspectral Image for Maize Seed Classification
  
 论文地址：https://www.researchgate.net/publication/317750407_Application_of_Joint_Skewness_Algorithm_to_Select_Optimal_Wavelengths_of_Hyperspectral_Image_for_Maize_Seed_Classification
